@@ -1,132 +1,96 @@
-import  * as config from "./config/constant.js"
-import { getServer } from "./tools/tools.js";
-import express  from "express";
+import express from "express";
+import { randomUUID } from "node:crypto";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-
+import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js"
+import * as config from "./config/constant.js";
+import tools from './tools/index.js';
 
 
 const app = express();
 app.use(express.json());
 
+// Map to store transports by session ID
+const transports= {};
+
+// Handle POST requests for client-to-server communication
 app.post('/mcp', async (req, res) => {
-  // In stateless mode, create a new instance of transport and server for each request
-  // to ensure complete isolation. A single instance would cause request ID collisions
-  // when multiple clients connect concurrently.
-  
-  try {
-    const server = getServer(); 
-    const transport = new StreamableHTTPServerTransport({
-      sessionIdGenerator: undefined,
+  // Check for existing session ID
+  const sessionId = req.headers['mcp-session-id'] ;
+  let transport;
+
+  if (sessionId && transports[sessionId]) {
+    // Reuse existing transport
+    transport = transports[sessionId];
+  } else if (!sessionId && isInitializeRequest(req.body)) {
+    // New initialization request
+    transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: () => randomUUID(),
+      onsessioninitialized: (sessionId) => {
+        // Store the transport by session ID
+        transports[sessionId] = transport;
+      }
     });
-    res.on('close', () => {
-      console.log('Request closed');
-      transport.close();
-      server.close();
+
+    // Clean up transport when closed
+    transport.onclose = () => {
+      if (transport.sessionId) {
+        delete transports[transport.sessionId];
+      }
+    };
+    const server = new McpServer({
+      name: "example-server",
+      version: "1.0.0"
     });
-    await server.connect(transport);
-    await transport.handleRequest(req, res, req.body);
-  } catch (error) {
-    console.error('Error handling MCP request:', error);
-    if (!res.headersSent) {
-      res.status(500).json({
-        jsonrpc: '2.0',
-        error: {
-          code: -32603,
-          message: 'Internal server error',
-        },
-        id: null,
-      });
+
+    // Register all tools from the tools directory
+
+    for (const tool of tools) {
+      if (!tool.handler) continue; // skip tools without handlers (e.g., commented out)
+      server.registerTool(tool.name, tool.config, tool.handler);
     }
+
+    
+
+
+
+
+    // Connect to the MCP server
+    await server.connect(transport);
+  } else {
+    // Invalid request
+    res.status(400).json({
+      jsonrpc: '2.0',
+      error: {
+        code: -32000,
+        message: 'Bad Request: No valid session ID provided',
+      },
+      id: null,
+    });
+    return;
   }
+
+  // Handle the request
+  await transport.handleRequest(req, res, req.body);
 });
 
-app.get('/mcp', async (req, res) => {
-  console.log('Received GET MCP request');
-  res.writeHead(405).end(JSON.stringify({
-    jsonrpc: "2.0",
-    error: {
-      code: -32000,
-      message: "Method not allowed."
-    },
-    id: null
-  }));
-});
+// Reusable handler for GET and DELETE requests
+const handleSessionRequest = async (req, res) => {
+  const sessionId = req.headers['mcp-session-id'] ;
+  if (!sessionId || !transports[sessionId]) {
+    res.status(400).send('Invalid or missing session ID');
+    return;
+  }
+  
+  const transport = transports[sessionId];
+  await transport.handleRequest(req, res);
+};
+// Handle GET requests for server-to-client notifications via SSE
+app.get('/mcp', handleSessionRequest);
 
-app.delete('/mcp', async (req, res) => {
-  console.log('Received DELETE MCP request');
-  res.writeHead(405).end(JSON.stringify({
-    jsonrpc: "2.0",
-    error: {
-      code: -32000,
-      message: "Method not allowed."
-    },
-    id: null
-  }));
-});
-
-
-// Start the server
+// Handle DELETE requests for session termination
+app.delete('/mcp', handleSessionRequest);
 
 app.listen(config.Port, () => {
-  console.log(`MCP Stateless Streamable HTTP Server listening on port ${config.Port}`);
+  console.log(`MCP Statefull Streamable HTTP Server listening on port ${config.Port}`);
 });
-
-
-
-
-
-// const server = new McpServer({
-//     name: "Fluree_MCP",
-//     version: "1.0.0",
-
-// });
-
-
-
-//     server.registerTool('random_transaction',
-//         {
-//             title: "transactions",
-//             description: "tool for all the insertions",
-
-
-//         },
-//         async () => {
-//             const result = await sendTransaction(6);
-
-
-//             return { content: [{ type: "text", text: JSON.stringify(result) }] };
-//         }
-//     );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// async function main() {
-//     const transport = new StdioServerTransport();
-//     await server.connect(transport);
-//     console.error("Weather MCP Server running on stdio");
-// }
-
-// main().catch((error) => {
-//     console.error("Fatal error in main():", error);
-//     process.exit(1);
-// });

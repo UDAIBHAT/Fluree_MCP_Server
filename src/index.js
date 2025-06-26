@@ -11,13 +11,14 @@ const app = express();
 app.use(express.json());
 
 // Map to store transports by session ID
-const transports= {};
-
+const transports = {}; // this will store all the trasport connection.  as the session id as key and transport obj as value
 // Handle POST requests for client-to-server communication
 app.post('/mcp', async (req, res) => {
   // Check for existing session ID
-  const sessionId = req.headers['mcp-session-id'] ;
+  const sessionId = req.headers['mcp-session-id'];
   let transport;
+
+  
 
   if (sessionId && transports[sessionId]) {
     // Reuse existing transport
@@ -28,7 +29,12 @@ app.post('/mcp', async (req, res) => {
       sessionIdGenerator: () => randomUUID(),
       onsessioninitialized: (sessionId) => {
         // Store the transport by session ID
-        transports[sessionId] = transport;
+        transports[sessionId] = transport; // adding the new transport created to the transports object for futher use or mapping as the existing transport .
+        // console.log(transports);
+
+
+
+        
       }
     });
 
@@ -39,7 +45,7 @@ app.post('/mcp', async (req, res) => {
       }
     };
     const server = new McpServer({
-      name: "example-server",
+      name: "Fluree_MCP_Server",
       version: "1.0.0"
     });
 
@@ -50,7 +56,7 @@ app.post('/mcp', async (req, res) => {
       server.registerTool(tool.name, tool.config, tool.handler);
     }
 
-    
+
 
 
 
@@ -76,12 +82,12 @@ app.post('/mcp', async (req, res) => {
 
 // Reusable handler for GET and DELETE requests
 const handleSessionRequest = async (req, res) => {
-  const sessionId = req.headers['mcp-session-id'] ;
+  const sessionId = req.headers['mcp-session-id'];
   if (!sessionId || !transports[sessionId]) {
     res.status(400).send('Invalid or missing session ID');
     return;
   }
-  
+
   const transport = transports[sessionId];
   await transport.handleRequest(req, res);
 };

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import * as config from "../config/constant.js";
 
 export default {
   name: "flureeQueryTool",
@@ -10,23 +11,23 @@ export default {
       fromCollection: z.string().default("_collection")
     }
   },
-  handler: async ({ selectFields = ["*"], fromCollection = "_collection" }) => {
-    const queryResult = await executeFlureeQuery(selectFields, fromCollection);
+  handler: async ({ selectFields = ["*"], fromCollection = "_collection" }, session = {}) => {
+    const { dbUrl, network, ledger } = (session.connectionInfo || {});
+    const url = `${dbUrl || config.FLUREE_DB_URL }/fdb/${network || config.FLUREE_NETWORK }/${ledger || config.FLUREE_LEDGER}/query`;
+    const queryResult = await executeFlureeQuery(url, selectFields, fromCollection);
     return {
       content: [
         {
           type: "text",
-          text: `✅ Fluree Query Result:\n\n` + JSON.stringify(queryResult, null, 2)
+          text: `Fluree Query Result:\n\n` + JSON.stringify(queryResult, null, 2)
         }
       ]
     };
   }
 };
 
-const url = "http://localhost:8090/fdb/ssbd/amc/query";  // Adjust as per your network/ledger names
-
 // Function to construct the query and send it to Fluree
-async function executeFlureeQuery(selectFields, fromCollection) {
+async function executeFlureeQuery(url, selectFields, fromCollection) {
   const query = {
     select: selectFields,
     from: fromCollection

@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import * as config from "../config/constant.js";
+
 
 export default {
   name: "flureeBlockQueryTool",
@@ -9,8 +11,10 @@ export default {
       block: z.number().min(1).default(5) // Default block number is 5
     }
   },
-  handler: async ({ block }) => {
-    const blockResult = await executeBlockQuery(block);
+  handler: async ({ block }, session = {}) => {
+    const { dbUrl, network, ledger } = (session.connectionInfo || {});
+    const url = `${dbUrl || config.FLUREE_DB_URL }/fdb/${network || config.FLUREE_NETWORK }/${ledger || config.FLUREE_LEDGER}/block`;
+    const blockResult = await executeBlockQuery(url, block);
     return {
       content: [
         {
@@ -22,9 +26,8 @@ export default {
   }
 };
 
-const url = "http://localhost:8090/fdb/ssbd/amc/block";
 // Function to construct the block query and send it to Fluree
-async function executeBlockQuery(block) {
+async function executeBlockQuery(url, block) {
   const query = {
     block: block
   };

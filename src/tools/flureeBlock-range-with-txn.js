@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import * as config from "../config/constant.js";
 
 export default {
   name: "flureeBlockRangeWithTxnTool",
@@ -11,20 +12,14 @@ export default {
     }
   },
 
-  handler: async ({ start, end }) => {
-    // Construct the URL for the block-range-with-txn endpoint
-    const url = `http://localhost:8090/fdb/ssbd/amc/block-range-with-txn`;
-
-    // Prepare the request body with the block range
+  handler: async ({ start, end }, session = {}) => {
+    const { dbUrl, network, ledger } = (session.connectionInfo || {});
+    const url = `${dbUrl || config.FLUREE_DB_URL }/fdb/${network || config.FLUREE_NETWORK }/${ledger || config.FLUREE_LEDGER}/block-range-with-txn`;
     const body = {
       start: start,
       end: end
     };
-
-    // Fetch the block stats and transactions
     const result = await fetchBlockRangeWithTxn(url, body);
-
-    // Return the response
     if (result.success) {
       return {
         content: [

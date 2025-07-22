@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import * as config from "../config/constant.js";
+
 
 export default {
   name: "flureeMultiQueryTool",
@@ -18,23 +20,23 @@ export default {
       })
     }
   },
-  handler: async ({ queries }) => {
-    const multiQueryResult = await executeMultiQuery(queries);
+  handler: async ({ queries }, session = {}) => {
+    const { dbUrl, network, ledger } = (session.connectionInfo || {});
+    const url = `${dbUrl || config.FLUREE_DB_URL }/fdb/${network || config.FLUREE_NETWORK }/${ledger || config.FLUREE_LEDGER}/multi-query`;
+    const multiQueryResult = await executeMultiQuery(url, queries);
     return {
       content: [
         {
           type: "text",
-          text: `✅ Fluree Multi-Query Result:\n\n` + JSON.stringify(multiQueryResult, null, 2)
+          text: JSON.stringify(multiQueryResult, null, 2)
         }
       ]
     };
   }
 };
 
-const url = "http://localhost:8090/fdb/ssbd/amc/multi-query";
-
 // Function to construct the multi-query and send it to Fluree
-async function executeMultiQuery(queries) {
+async function executeMultiQuery(url, queries) {
   const opt = {
     method: "POST",
     headers: { 'Content-Type': 'application/json' },

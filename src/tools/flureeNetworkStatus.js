@@ -1,3 +1,4 @@
+import * as config from "../config/constant.js";
 
 
 export default {
@@ -9,28 +10,29 @@ export default {
       // No input parameters for this tool
     }
   },
-  handler: async () => {
-    const status = await getNetworkStatus();
+  handler: async (_params, session = {}) => {
+    const { dbUrl } = (session.connectionInfo || {});
+    const url = `${dbUrl || config.FLUREE_DB_URL}/fdb/nw-state`;
+    // console.log(dbUrl);
+    
+    const status = await getNetworkStatus(url);
     return {
       content: [
         {
           type: "text",
-          text: `✅ Fluree Network Status:\n\n` + JSON.stringify(status, null, 2)
+          text: `Fluree Network Status:\n\n` + JSON.stringify(status, null, 2)
         }
       ]
     };
   }
 };
 
-const url = "http://localhost:8090/fdb/nw-state";
-
-async function getNetworkStatus() {
+async function getNetworkStatus(url) {
   const opt = {
     method: "POST",
     headers: { 'Content-Type': 'application/json' },
     body: null // No body required for this request
   };
-  
   try {
     const response = await fetch(url, opt);
     const result = await response.json();

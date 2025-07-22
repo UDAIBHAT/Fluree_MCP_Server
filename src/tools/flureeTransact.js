@@ -1,7 +1,5 @@
 import { z } from 'zod';
-
-
-
+import * as config from "../config/constant.js";
 
 export default {
   name: "flureeTransact",
@@ -12,27 +10,24 @@ export default {
       count: z.number().min(1).max(50).default(1)
     }
   },
-  handler: async ({ count = 1 }) => {
+  handler: async ({ count = 1 }, session = {}) => {
+    const { dbUrl, network, ledger } = (session.connectionInfo || {});
+    const url = `${dbUrl || config.FLUREE_DB_URL }/fdb/${network || config.FLUREE_NETWORK }/${ledger || config.FLUREE_LEDGER}/transact`;
     const results = [];
     for (let i = 0; i < count; i++) {
-      results.push(await sendTransaction(i + 1));
+      results.push(await sendTransaction(url, i + 1));
     }
     return {
       content: [
         {
           type: "text",
-          text: `✅ ${count} collections created:\n\n` + JSON.stringify(results, null, 2)
+          text: JSON.stringify(results, null, 2)
         }
       ]
     };
   }
-}; 
+};
 
-
-
-
-
-const url = "http://localhost:8090/fdb/ssbd/amc/transact";
 function generateRandomString(length = 8) {
   return Math.random().toString(36).substring(2, length + 2);
 }
@@ -42,7 +37,7 @@ function createTransactionQuery(index) {
     "name": `test_${generateRandomString()}_${index}`
   }];
 }
-async function sendTransaction(index) {
+async function sendTransaction(url, index) {
   const query = createTransactionQuery(index);
   const opt = {
     method: "POST",

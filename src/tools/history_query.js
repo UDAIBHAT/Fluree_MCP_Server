@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import * as config from "../config/constant.js";
+
 
 export default {
   name: "flureeHistoryQueryTool",
@@ -10,22 +12,23 @@ export default {
       block: z.number().min(1).default(4)  // Default block number
     }
   },
-  handler: async ({ history, block }) => {
-    const historyResult = await executeHistoryQuery(history, block);
+  handler: async ({ history, block }, session = {}) => {
+    const { dbUrl, network, ledger } = (session.connectionInfo || {});
+    const url = `${dbUrl || config.FLUREE_DB_URL }/fdb/${network || config.FLUREE_NETWORK }/${ledger || config.FLUREE_LEDGER}/history`;
+    const historyResult = await executeHistoryQuery(url, history, block);
     return {
       content: [
         {
           type: "text",
-          text: `✅ Fluree History Query Result for ${history.join(", ")} at Block ${block}:\n\n` + JSON.stringify(historyResult, null, 2)
+          text: `Fluree History Query Result for ${history.join(", ")} at Block ${block}:\n\n` + JSON.stringify(historyResult, null, 2)
         }
       ]
     };
   }
 };
 
-const url = "http://localhost:8090/fdb/ssbd/amc/history";
 // Function to construct the history query and send it to Fluree
-async function executeHistoryQuery(history, block) {
+async function executeHistoryQuery(url, history, block) {
   const query = {
     history: history,
     block: block

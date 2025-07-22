@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import * as config from "../config/constant.js";
 
 export default {
   name: "flureeNewKeysTool",
@@ -9,8 +10,10 @@ export default {
       method: z.enum(["GET", "POST"]).default("POST") // Allows the user to choose between GET or POST
     }
   },
-  handler: async ({ method }) => {
-    const keys = await fetchNewKeys(method);
+  handler: async ({ method }, session = {}) => {
+    const { dbUrl } = (session.connectionInfo || {});
+    const url = `${dbUrl || config.FLUREE_DB_URL}/fdb/new-keys`;
+    const keys = await fetchNewKeys(url, method);
     if (keys.success) {
       return {
         content: [
@@ -34,9 +37,7 @@ export default {
 };
 
 // Function to fetch new keys from Fluree
-async function fetchNewKeys(method) {
-  const url = "http://localhost:8090/fdb/new-keys";  // Fluree endpoint to fetch new keys
-  
+async function fetchNewKeys(url, method) {
   const options = {
     method: method,
     headers: { 'Content-Type': 'application/json' },
@@ -45,11 +46,8 @@ async function fetchNewKeys(method) {
 
   try {
     const response = await fetch(url, options);
-    
     const result = await response.json();
-    // console.log(result);
     return { success: true, data: result };
-    
   } catch (error) {
     return { success: false, error: error.message };
   }

@@ -15,29 +15,42 @@ const transports = {}; // this will store all the trasport connection.  as the s
 // Handle POST requests for client-to-server communication
 app.post('/mcp', async (req, res) => {
   // Check for existing session ID
+  console.log(req.headers) ;
   const sessionId = req.headers['mcp-session-id'];
+  // NEW: Read dbUrl, network, ledger from headers if present
+  const headerDbUrl = req.headers['dburl'];
+  const headerNetwork = req.headers['network'];
+  const headerLedger = req.headers['ledger'];
   let transport;
-
-  
 
   if (sessionId && transports[sessionId]) {
     // Reuse existing transport
     transport = transports[sessionId];
+    // NEW: Optionally update connectionInfo from headers for existing session
+    if (headerDbUrl || headerNetwork || headerLedger) {
+      transport.connectionInfo = {
+        dbUrl: headerDbUrl || transport.connectionInfo?.dbUrl || config.FLUREE_DB_URL,
+        network: headerNetwork || transport.connectionInfo?.network || config.FLUREE_NETWORK,
+        ledger: headerLedger || transport.connectionInfo?.ledger || config.FLUREE_LEDGER
+      };
+    }
   } else if (!sessionId && isInitializeRequest(req.body)) {
     // New initialization request
+    // NEW: Prefer headers, then body params, then config
+    const { dbUrl, network, ledger } = req.body.params || {};
     transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: () => randomUUID(),
       onsessioninitialized: (sessionId) => {
         // Store the transport by session ID
-        transports[sessionId] = transport; // adding the new transport created to the transports object for futher use or mapping as the existing transport .
-        // console.log(transports);
-
-
-
-        
+        transports[sessionId] = transport;
       }
     });
-
+    // Store connection info in the transport/session object
+    transport.connectionInfo = {
+      dbUrl: headerDbUrl || dbUrl || config.FLUREE_DB_URL ,
+      network: headerNetwork || network || config.FLUREE_NETWORK ,
+      ledger: headerLedger || ledger || config.FLUREE_LEDGER 
+    };
     // Clean up transport when closed
     transport.onclose = () => {
       if (transport.sessionId) {
@@ -48,19 +61,17 @@ app.post('/mcp', async (req, res) => {
       name: "Fluree_MCP_Server",
       version: "1.0.0"
     });
-
-    // Register all tools from the tools directory
-
+    // Register all tools from the tools directory, wrapping handlers to inject context
     for (const tool of tools) {
-      if (!tool.handler) continue; // skip tools without handlers (e.g., commented out)
-      server.registerTool(tool.name, tool.config, tool.handler);
+      if (!tool.handler) continue;
+      // Wrap the handler to inject session context
+      server.registerTool(tool.name, tool.config, async (params, context = {}) => {
+        // Attach connectionInfo from transport if available
+        const session = context.session || {};
+        session.connectionInfo = transport.connectionInfo;
+        return tool.handler(params, session);
+      });
     }
-
-
-
-
-
-
     // Connect to the MCP server
     await server.connect(transport);
   } else {
@@ -75,7 +86,6 @@ app.post('/mcp', async (req, res) => {
     });
     return;
   }
-
   // Handle the request
   await transport.handleRequest(req, res, req.body);
 });

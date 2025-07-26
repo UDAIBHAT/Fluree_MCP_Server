@@ -13,10 +13,17 @@
   "type": "module",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.13.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.1",
     "node-fetch": "^3.3.2",
-    "zod": "^3.25.67"
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

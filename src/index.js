@@ -10,7 +10,7 @@ app.use(express.json());
 // MCP Routes
 import mcproutes from "./routes/mcp.routes.js"
 
-app.use("api/v1/",mcproutes);
+app.use("/api/v1/",mcproutes);
 
 
 app.listen(config.Port, () => {

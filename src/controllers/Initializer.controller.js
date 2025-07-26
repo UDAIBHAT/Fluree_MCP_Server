@@ -12,20 +12,20 @@ const transports = {};
 const Initializer = async (req, res) => {
     const sessionId = req.headers['mcp-session-id'];
     const connectionInfo = getConnectionInfo(req);
-    const missingFields = validateConnectionInfo(connectionInfo);
+    // const missingFields = validateConnectionInfo(connectionInfo);
     let transport;
 
-    // Check for missing required fields
-    if (missingFields.length > 0) {
-        return res.status(400).json({
-            jsonrpc: '2.0',
-            error: {
-                code: -32001,
-                message: `Missing required parameter(s): ${missingFields.join(', ')}`,
-            },
-            id: req.body?.id ?? null,
-        });
-    }
+    // // Check for missing required fields
+    // if (missingFields.length > 0) {
+    //     return res.status(400).json({
+    //         jsonrpc: '2.0',
+    //         error: {
+    //             code: -32001,
+    //             message: `Missing required parameter(s): ${missingFields.join(', ')}`,
+    //         },
+    //         id: req.body?.id ?? null,
+    //     });
+    // }
 
     if (sessionId && transports[sessionId]) {
         transport = transports[sessionId];

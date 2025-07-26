@@ -7,6 +7,12 @@ import flureeBlockQuery from "./block_query.js";
 import flureeHistoryQuery from "./history_query.js";
 import flureeGenKeys from "./flureeGenKeys.js";
 import flureeBlockRangeWithTxn from "./flureeBlock-range-with-txn.js";
+import flureeSchemaCreate from "./flureeSchemaCreate.js";
+import flureeSchemaUpdate from "./flureeSchemaUpdate.js";
+import flureeSchemaValidate from "./flureeSchemaValidate.js";
+import flureeSchemaExport from "./flureeSchemaExport.js";
+import flureeSchemaImport from "./flureeSchemaImport.js";
+import flureeDbDiagnostic from "./flureeDbDiagnostic.js";
 
 export default [
   echo,
@@ -17,6 +23,11 @@ export default [
   flureeHistoryQuery,
   flureeMultiQuery,
   flureeGenKeys,
-  flureeBlockRangeWithTxn
-
-]; 
+  flureeBlockRangeWithTxn,
+  flureeSchemaCreate,
+  flureeSchemaUpdate,
+  flureeSchemaValidate,
+  flureeSchemaExport,
+  flureeSchemaImport,
+  flureeDbDiagnostic
+];

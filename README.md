@@ -71,7 +71,8 @@ README.md              # ← you are here
 ---
 ## 🖥️ IDE & Non-IDE Client Setup
 
-**IDE clients** (Cursor, Windsurf, etc.) can add the server definition to their settings. Two examples are shown below – one for Cursor and one for Windsurf:
+### **IDE clients** 
+```Cursor, Windsurf,Google Gemini . RooCode``` can add the server definition to their settings. Two examples are shown below – one for Cursor and one for Windsurf:
 ### CURSOR IDE
 - Just insert this Patch of Json-code under the MCP-Section in the Cursor settings and you are good to go..... 
 ```jsonc
@@ -105,7 +106,23 @@ README.md              # ← you are here
 }
 ```
 
-**Non-IDE clients** can simply POST to `/api/v1/mcp` (or `/mcp`) with a JSON body containing `dbUrl`, `network`, and `ledger` as shown in the Quick-Start initialization request.
+### GOOGLE GEMINI
+- Use the following JSON patch in your Gemini .settings ```[ Currently Gemini doesnt support Streamable HTTP transport]```
+
+```jsonc
+{
+  "mcpServers": {
+    "Fluree_MCP_Server": {
+      "httpUrl": "http://localhost:3000/api/v1/mcp?dburl=<Your_DBurl>&network=<Your_Network>&ledger=<Your_Ledger>",
+      "timeout": 30000,
+      "trust": true
+    }
+  }
+}
+```
+
+### **Non-IDE clients** 
+Can simply POST to `/api/v1/mcp` (or `/mcp`) with a JSON body containing `dbUrl`, `network`, and `ledger` as shown in the Quick-Start initialization request.
 
 ---
 

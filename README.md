@@ -34,7 +34,7 @@ README.md              # ← you are here
 
 1. **Clone & Install**
    ```bash
-   git clone https://github.com/your-org/fluree-mcp-server.git
+   git clone https://github.com/UDAIBHAT/Fluree_MCP_Server.git
    cd fluree-mcp-server
    npm install
    cp .env.example .env   # adjust DB connection defaults if desired

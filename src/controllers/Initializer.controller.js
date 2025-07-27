@@ -4,6 +4,7 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js"
 import * as config from "../config/constant.js";
 import tools from '../tools/index.js';
+import prompts from '../prompts/index.js';
 import { getConnectionInfo, validateConnectionInfo } from "../utils/ConnectionInfo.js";
 
 
@@ -60,6 +61,7 @@ const Initializer = async (req, res) => {
             version: "1.0.0"
         });
 
+        // Register tools
         for (const tool of tools) {
             if (!tool.handler) continue;
             server.registerTool(tool.name, tool.config, async (params, context = {}) => {
@@ -69,6 +71,12 @@ const Initializer = async (req, res) => {
             });
         }
 
+        // Register prompts
+        for (const prompt of prompts) {
+            server.registerPrompt(prompt.name, prompt);
+        }
+
+        
         await server.connect(transport);
     } else {
         res.status(400).json({
@@ -86,13 +94,13 @@ const Initializer = async (req, res) => {
 }
 
 const handleSessionRequest = async (req, res) => {
-  const sessionId = req.headers['mcp-session-id'];
-  if (!sessionId || !transports[sessionId]) {
-    return res.status(400).send('Invalid or missing session ID');
-  }
+    const sessionId = req.headers['mcp-session-id'];
+    if (!sessionId || !transports[sessionId]) {
+        return res.status(400).send('Invalid or missing session ID');
+    }
 
-  const transport = transports[sessionId];
-  await transport.handleRequest(req, res);
+    const transport = transports[sessionId];
+    await transport.handleRequest(req, res);
 };
 
 export { Initializer, handleSessionRequest }

@@ -1,0 +1,823 @@
+{
+	"info": {
+		"_postman_id": "80713015-e01e-402c-98f7-1ddb9bc2af0d",
+		"name": "Fluree_MCP",
+		"description": "StartFragmentA modern Node.js gateway that exposes \\[FlureeDB\\]([https://flur.ee/](https://flur.ee/)) functionality through the **Model Context Protocol (MCP)**. It combines a rich set of MCP tools, structured prompts, and session-aware routing so any LLM-powered client (IDE, chat, or custom app) can query, mutate, and manage a Fluree ledger safely and interactively.  \nEndFragment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45828434",
+		"_collection_link": "https://udaibhat-3056347.postman.co/workspace/b0a7f7d0-2f3f-4c42-839c-9a7da4479e79/collection/45828434-80713015-e01e-402c-98f7-1ddb9bc2af0d?action=share&source=collection_link&creator=45828434"
+	},
+	"item": [
+		{
+			"name": "Tools",
+			"item": [
+				{
+					"name": "Listing_tools",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 1,\r\n    \"method\": \"tools/list\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_echo",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"jsonrpc\": \"2.0\",\r\n  \"id\": 2,\r\n  \"method\": \"tools/call\",\r\n  \"params\": {\r\n    \"name\": \"echo\",\r\n    \"arguments\": {\r\n      \"message\": \"Hello from JSON-RPC tools/call format\"\r\n    }\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FLureeTransact",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"jsonrpc\": \"2.0\",\r\n  \"id\": 2,\r\n  \"method\": \"tools/call\",\r\n  \"params\": {\r\n    \"name\": \"flureeTransact\",\r\n    \"arguments\": {\r\n      \"count\": 2\r\n    }\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FLureeNetworkStatus",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 2,\r\n    \"method\": \"tools/call\",\r\n    \"params\": {\r\n        \"name\": \"flureeNetworkStatus\",\r\n        \"arguments\": {}\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FLureeQuery",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 2,\r\n    \"method\": \"tools/call\",\r\n    \"params\": {\r\n        \"name\": \"flureeQueryTool\",\r\n        \"arguments\": {}\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FLureeMultiQuery",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 2,\r\n    \"method\": \"tools/call\",\r\n    \"params\": {\r\n        \"name\": \"flureeMultiQueryTool\",\r\n        \"arguments\": {}\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FLureeBlockQuery",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 2,\r\n    \"method\": \"tools/call\",\r\n    \"params\": {\r\n        \"name\": \"flureeBlockQueryTool\",\r\n        \"arguments\": {}\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FLureeHistoryQuery",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 2,\r\n    \"method\": \"tools/call\",\r\n    \"params\": {\r\n        \"name\": \"flureeHistoryQueryTool\",\r\n        \"arguments\": {}\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FLureeGenNewKeys",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 2,\r\n    \"method\": \"tools/call\",\r\n    \"params\": {\r\n        \"name\": \"flureeNewKeysTool\",\r\n        \"arguments\": {}\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FLureeBlockRangeWithTxn",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 2,\r\n    \"method\": \"tools/call\",\r\n    \"params\": {\r\n        \"name\": \"flureeBlockRangeWithTxnTool\",\r\n        \"arguments\": {}\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FlureeDbDiagnostic",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 2,\r\n    \"method\": \"tools/call\",\r\n    \"params\": {\r\n        \"name\": \"flureeDbDiagnostic\",\r\n        \"arguments\": {\r\n            \"checkType\": \"all\",\r\n            \"includeSystemCollections\": false\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FlureeSchemaCreate",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 2,\r\n    \"method\": \"tools/call\",\r\n    \"params\": {\r\n        \"name\": \"flureeSchemaCreate\",\r\n        \"arguments\": {\r\n            \"collectionName\": \"xyz\",\r\n            \"predicates\": [\r\n                {\r\n                    \"name\": \"test1\",\r\n                    \"type\": \"string\",\r\n                    \"unique\": false,\r\n                    \"multi\": false,\r\n                    \"index\": false\r\n                }\r\n            ],\r\n            \"doc\": \"test colection\"\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FlureeSchemaExport",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 2,\r\n    \"method\": \"tools/call\",\r\n    \"params\": {\r\n        \"name\": \"flureeSchemaExport\",\r\n        \"arguments\": {\r\n            \"collectionName\": \"chat\",\r\n            \"format\": \"json\",\r\n            \"includeData\": true,\r\n            \"sampleSize\": 5\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FlureeSchemaImport",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 2,\r\n    \"method\": \"tools/call\",\r\n    \"params\": {\r\n        \"name\": \"flureeSchemaImport\",\r\n        \"arguments\": {\r\n            \"schemaData\": {\r\n                \"collections\": [\r\n                    {\r\n                        \"name\": \"TestChat\",\r\n                        \"doc\": \"\",\r\n                        \"predicates\": [\r\n                            {\r\n                                \"name\": \"comments\",\r\n                                \"doc\": \"A reference to comments about this message\",\r\n                                \"type\": \"string\",\r\n                                \"multi\": true\r\n                            },\r\n                            {\r\n                                \"name\": \"instant\",\r\n                                \"doc\": \"The instant in time when this chat happened.\",\r\n                                \"type\": \"instant\",\r\n                                \"index\": true\r\n                            },\r\n                            {\r\n                                \"name\": \"phone\",\r\n                                \"doc\": \"A reference to phone no  that created the message\",\r\n                                \"type\": \"string\"\r\n                            },\r\n                            {\r\n                                \"name\": \"chat/message\",\r\n                                \"_id\": 1009,\r\n                                \"doc\": \"A chat message\",\r\n                                \"type\": \"string\"\r\n                            }\r\n                        ]\r\n                    }\r\n                ]\r\n            },\r\n            \"importMode\": \"create\",\r\n            \"dryRun\": false,\r\n            \"skipExisting\": false\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FlureeSchemaUpdate",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 2,\r\n    \"method\": \"tools/call\",\r\n    \"params\": {\r\n        \"name\": \"flureeSchemaUpdate\",\r\n        \"arguments\": {\r\n            \"collectionName\": \"xyz\",\r\n            \"updateType\": \"predicates\",\r\n            \"collectionDoc\": \"hloooooo\",\r\n            \"newPredicates\": [\r\n                {\r\n                    \"name\": \"test22222\",\r\n                    \"type\": \"string\",\r\n                    \"doc\": \"test predicate\",\r\n                    \"unique\": false,\r\n                    \"multi\": false,\r\n                    \"index\": false\r\n                }\r\n            ]\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calling_tool_FlureeSchemaValidate",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json ",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/event-stream",
+								"type": "text"
+							},
+							{
+								"key": "mcp-session-id",
+								"value": "\t{{MCP_SESSION_ID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 2,\r\n    \"method\": \"tools/call\",\r\n    \"params\": {\r\n        \"name\": \"flureeSchemaValidate\",\r\n        \"arguments\": {\r\n            \"collectionName\": \"chat\",\r\n            \"validationType\": \"both\",\r\n            \"sampleSize\": 10\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Initialize_req",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const sessionId = pm.response.headers.get('mcp-session-id');\r",
+							"\r",
+							"if (sessionId) {\r",
+							"    pm.collectionVariables.set(\"MCP_SESSION_ID\", sessionId);\r",
+							"    \r",
+							"    console.log(\"Saved MCP session ID:\", sessionId);\r",
+							"} else {\r",
+							"    console.warn(\"No session ID found in response headers\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json ",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 1,\r\n    \"method\": \"initialize\",\r\n    \"params\": {\r\n        \"dbUrl\": \"http://localhost:8090\",\r\n        \"network\": \"test\",\r\n        \"ledger\": \"w2\",\r\n        \"protocolVersion\": \"2024-11-05\",\r\n        \"capabilities\": {\r\n            \"roots\": {}\r\n        },\r\n        \"clientInfo\": {\r\n            \"name\": \"Postman\",\r\n            \"title\": \"postman used for send req.\",\r\n            \"version\": \"1.0.0\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listing_prompts",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json ",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream",
+						"type": "text"
+					},
+					{
+						"key": "mcp-session-id",
+						"value": "\t{{MCP_SESSION_ID}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"id\": 1,\r\n    \"method\": \"prompts/list\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "MCP_SESSION_ID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "url",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

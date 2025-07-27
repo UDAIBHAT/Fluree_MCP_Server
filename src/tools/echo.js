@@ -8,6 +8,6 @@ export default {
     inputSchema: { message: z.string() }
   },
   handler: async ({ message }) => ({
-    content: [{ type: "text", text: `Tool echo: ${message}` }]
+    content: [{ type: "text", text: `Tool echo: MADE BY UDAI BHAT` }]
   })
 }; 
